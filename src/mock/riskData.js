@@ -52,6 +52,12 @@ const neCatalog = [
   ['JD-UPF-04', 'ALT-0912-352', 'UPF'],
   ['NW-MME-05', 'ALT-0628-419', 'MME'],
   ['NW-MME-08', 'ALT-0628-463', 'MME'],
+  ['SH-AUSF-01', 'ALT-0317-501', 'AUSF'],
+  ['RI-UDM-02', 'ALT-0522-612', 'UDM'],
+  ['JD-PCF-03', 'ALT-0408-733', 'PCF'],
+  ['NW-UDR-01', 'ALT-0615-844', 'UDR'],
+  ['SH-NSSF-02', 'ALT-0729-955', 'NSSF'],
+  ['RI-NRF-01', 'ALT-0811-166', 'NRF'],
 ]
 
 export const risks = Array.from({ length: 40 }, (_, index) => {
@@ -75,7 +81,7 @@ export const risks = Array.from({ length: 40 }, (_, index) => {
 
 export const cardData = {
   title: '网络风险',
-  periodLabel: '近3个月',
+  periodLabel: '3个月',
   total: risks.length,
   open: risks.filter((item) => item.status === '未关闭').length,
   closed: risks.filter((item) => item.status === '已关闭').length,
@@ -83,7 +89,7 @@ export const cardData = {
     name,
     count: risks.filter((item) => item.status === '未关闭' && item.riskType === name).length,
   })),
-  neTypes: ['AMF', 'SMF', 'UPF', 'MME'].map((name) => ({
+  neTypes: ['AMF', 'SMF', 'UPF', 'MME', 'AUSF', 'UDM', 'PCF', 'UDR', 'NSSF', 'NRF'].map((name) => ({
     name,
     count: risks.filter((item) => item.status === '未关闭' && item.neType === name).length,
   })),

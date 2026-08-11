@@ -7,7 +7,7 @@ const props = defineProps({
   open: Boolean,
   filter: {
     type: Object,
-    default: () => ({ kind: 'all', label: '网络风险详情' }),
+    default: () => ({ kind: 'all' }),
   },
 })
 
@@ -32,21 +32,12 @@ const visiblePages = computed(() => {
   return pages
 })
 
-const title = computed(() => `${props.filter.label} · ${totalCount.value}项`)
-const scopeLabel = computed(() => {
-  if (props.filter.kind === 'all') return '全部状态'
-  if (props.filter.kind === 'status') return props.filter.value
-  return `${props.filter.value} · 未关闭`
-})
-
 const levelClass = (level) => ({ 高: 'level--high', 中: 'level--medium', 低: 'level--low' }[level])
 const rowNumber = (index) => (page.value - 1) * pageSize.value + index + 1
 const isFilterActive = (field) => Boolean(columnFilters.value[field])
 
 const requestParams = () => {
   const params = {
-    start_time: '2026-05-06 00:00:00',
-    end_time: '2026-08-06 23:59:59',
     start: (page.value - 1) * pageSize.value,
     limit: pageSize.value,
     risk_status: 'ALL',
@@ -54,7 +45,6 @@ const requestParams = () => {
     ne_type_code: '',
     risk_level_code: columnFilters.value.riskLevel || '',
     ne_id: columnFilters.value.neId || '',
-    ne_name: '',
     risk_name: columnFilters.value.riskName || '',
   }
 
@@ -174,18 +164,9 @@ onBeforeUnmount(() => {
   <Teleport to="body">
     <Transition name="modal">
       <div v-if="open" class="modal-backdrop" role="presentation" @mousedown.self="emit('close')">
-        <section class="detail-modal" role="dialog" aria-modal="true" :aria-label="title" :data-loading="loading">
+        <section class="detail-modal" role="dialog" aria-modal="true" aria-label="网络风险详情" :data-loading="loading">
           <header class="detail-modal__header">
-            <div>
-              <p class="eyebrow">风险明细</p>
-              <h2>{{ title }}</h2>
-              <div class="filter-summary">
-                <span>近3个月</span>
-                <span>{{ scopeLabel }}</span>
-                <span v-for="(value, field) in columnFilters" :key="field" class="filter-summary__active">{{ value }}</span>
-                <span>更新时间 2026-08-06 11:20</span>
-              </div>
-            </div>
+            <h2>网络风险详情</h2>
             <button class="icon-button" type="button" aria-label="关闭详情弹窗" title="关闭" @click="emit('close')">
               <X :size="21" aria-hidden="true" />
             </button>

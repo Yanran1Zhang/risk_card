@@ -8,7 +8,7 @@ defineProps({
   },
 })
 
-const emit = defineEmits(['select', 'view-all'])
+const emit = defineEmits(['select'])
 
 const select = (filter) => emit('select', filter)
 </script>
@@ -16,12 +16,9 @@ const select = (filter) => emit('select', filter)
 <template>
   <section class="risk-card" aria-labelledby="risk-card-title">
     <header class="risk-card__header">
-      <div>
-        <p class="eyebrow">日常风险预防</p>
-        <h2 id="risk-card-title">{{ data.title }}</h2>
-      </div>
-      <button class="view-all" type="button" @click="emit('view-all')">
-        查看全部
+      <h2 id="risk-card-title">{{ data.title }}</h2>
+      <button class="view-all" type="button" @click="select({ kind: 'all' })">
+        查看全量
         <ChevronRight :size="16" aria-hidden="true" />
       </button>
     </header>
@@ -31,18 +28,18 @@ const select = (filter) => emit('select', filter)
         class="risk-total__number"
         type="button"
         aria-label="查看全部网络风险"
-        @click="select({ kind: 'all', label: '网络风险详情' })"
+        @click="select({ kind: 'all' })"
       >
         <span>{{ data.total }}</span>
         <ArrowUpRight :size="18" aria-hidden="true" />
       </button>
       <p>风险总数 <span>({{ data.periodLabel }})</span></p>
       <div class="risk-total__status">
-        <button type="button" class="status-link status-link--open" @click="select({ kind: 'status', value: '未关闭', label: '未关闭风险' })">
+        <button type="button" class="status-link status-link--open" @click="select({ kind: 'status', value: '未关闭' })">
           未关闭 <strong>{{ data.open }}</strong>
         </button>
         <span class="status-divider" aria-hidden="true"></span>
-        <button type="button" class="status-link status-link--closed" @click="select({ kind: 'status', value: '已关闭', label: '已关闭风险' })">
+        <button type="button" class="status-link status-link--closed" @click="select({ kind: 'status', value: '已关闭' })">
           已关闭 <strong>{{ data.closed }}</strong>
         </button>
       </div>
@@ -59,7 +56,7 @@ const select = (filter) => emit('select', filter)
           :key="item.name"
           class="type-row"
           type="button"
-          @click="select({ kind: 'riskType', value: item.name, label: `${item.name}风险` })"
+          @click="select({ kind: 'riskType', value: item.name })"
         >
           <span class="type-row__meta">
             <strong>{{ item.name }}</strong>
@@ -87,7 +84,7 @@ const select = (filter) => emit('select', filter)
           :key="item.name"
           class="ne-row"
           type="button"
-          @click="select({ kind: 'neType', value: item.name, label: `${item.name} 网络风险` })"
+          @click="select({ kind: 'neType', value: item.name })"
         >
           <span>{{ item.name }}</span>
           <strong>{{ item.count }}</strong>

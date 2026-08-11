@@ -45,7 +45,6 @@ export const fetchRiskDetails = (params) => new Promise((resolve) => {
 
   const matchedItems = contextItems.filter((item) => (
     (!params.ne_id || item.neId === params.ne_id)
-    && (!params.ne_name || item.neName.includes(params.ne_name))
     && (!params.risk_name || item.riskName === params.risk_name)
     && (!riskLevel || item.riskLevel === riskLevel)
   ))
