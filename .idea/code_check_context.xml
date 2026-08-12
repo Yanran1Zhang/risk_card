@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CodeCheckProjectContext">
+    <option name="branch" value="master" />
+    <option name="checkAvailable" value="true" />
+    <option name="checkState" value="Finished" />
+    <option name="repository" value="https://github.com/Yanran1Zhang/risk_card.git" />
+    <option name="timeLine">
+      <TimeLine>
+        <option name="endTime" value="2026-08-11 15:26:23.487" />
+        <option name="startTime" value="2026-08-11 15:26:23.487" />
+      </TimeLine>
+    </option>
+  </component>
+</project>
