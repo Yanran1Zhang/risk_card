@@ -11,7 +11,7 @@ const {useI18n} = require('/EdgeSysMgrService/cs_ncd_system_config/sc_i18n_util'
 const t = useI18n(_context, _runtime, 'risk_check');
 
 const start = _message.start ? _message.start : 0;
-const limit = _message.limit ? _message.limit : 15;
+const limit = _message.limit ? _message.limit : 10;
 const riskStatusCode = _message.risk_status || 'ALL';
 const riskTypeCode = _message.risk_type_code || '';
 const neTypeCode = _message.ne_type_code || '';
@@ -107,26 +107,26 @@ function main() {
   // 4. 查询分页列表（受范围+列筛选影响）
   const listQuery = `select
       tn.task_ne_id as task_ne_id,
-      tn.ne_name,
-      tn.ne_id,
-      tn.ne_uid,
-      config.ne_type,
+      tn.ne_name as ne_name,
+      tn.ne_id as ne_id,
+      tn.ne_uid as ne_uid,
+      config.ne_type as ne_type,
       ${ruleNameCol} as risk_name,
       config.rule_id as risk_id,
-      config.risk_type,
+      config.risk_type as risk_type,
       ${riskTypeNameCol} as risk_type_name,
-      config.risk_level,
+      config.risk_level as risk_level,
       ${improvementMeasureCol} as improvement_measure,
       ${riskDescriptionCol} as risk_description,
       ${disposalTypeCol} as disposal_type,
       ${productNameCol} as product_name,
-      tn.risk_status,
-      tn.risk_identification_time,
-      tn.risk_closed_time,
-      tn.latest_scan_time,
-      tn.risk_duration_day,
+      tn.risk_status as risk_status,
+      tn.risk_identification_time as risk_identification_time,
+      tn.risk_closed_time as risk_closed_time,
+      tn.latest_scan_time as latest_scan_time,
+      tn.risk_duration_day as risk_duration_day,
       task.task_id as task_id,
-      config.source
+      source as source
     ${codeSnippet}
     ${scopeWhere}
     ${columnWhere}

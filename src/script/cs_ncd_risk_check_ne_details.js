@@ -41,29 +41,29 @@ function main() {
 
   const riskTql = `select 
                     tn.task_ne_id as task_ne_id,
-                    tn.ne_name,
-                    tn.ne_uid,
-                    tn.ne_id,
-                    tn.ems_name,
+                    tn.ne_name as ne_name,
+                    tn.ne_uid as ne_uid,
+                    tn.ne_id as ne_id,
+                    tn.ems_name as ems_name,
                     ${productLine} as product_line ,
                     ${productCategoryName} as product_category_name,
                     ${productName} as product_name,
-                    config.ne_type,
-                    config.ict_scenario,
+                    config.ne_type as ne_type,
+                    config.ict_scenario as ict_scenario,
                     ${ruleName} as risk_name,
                     config.rule_id as risk_id,
-                    config.risk_level,
+                    config.risk_level as risk_level,
                     task.task_id as task_id,
-                    source,
+                    source as source,
                     ${disposalType} as disposal_type ,
                     ${riskDescription} as risk_description ,
                     ${improvementMeasure} as improvement_measure,
-                    tn.latest_scan_time,
+                    tn.latest_scan_time as latest_scan_time,
                     tn.py_res_status as check_result,
-                    tn.risk_identification_time,
-                    tn.risk_status,
-                    tn.risk_closed_time,
-                    tn.risk_duration_day
+                    tn.risk_identification_time as risk_identification_time,
+                    tn.risk_status as risk_status,
+                    tn.risk_closed_time as risk_closed_time,
+                    tn.risk_duration_day as risk_duration_day
                    from
                        '/EdgeRiskCheckService/cs_ncd_risk_check/cs_ncd_risk_check_task_ne' AS tn
                        left join '/EdgeRiskCheckService/cs_ncd_risk_check/cs_ncd_risk_check_risk_task' AS task
