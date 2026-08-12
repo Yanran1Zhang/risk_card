@@ -1,6 +1,6 @@
 function getRiskCheckNeDetails(start, limit, risk_status, risk_type_code, ne_type_code, risk_level_code, ne_id, risk_name) {
   return HttpRequest.ajax({
-    url: '/adc-service/web/rest/v1/services/EdgeCoreNetExpertService/cne_dash/cne_dash_risk_check_ne_details',
+    url: '/adc-service/web/rest/v1/services/EdgeRiskCheckService/cs_ncd_risk_check/cs_ncd_risk_check_cne_details',
     method: 'post',
     data: {
       start,
@@ -17,7 +17,7 @@ function getRiskCheckNeDetails(start, limit, risk_status, risk_type_code, ne_typ
 
 function getRiskOverview() {
   return HttpRequest.ajax({
-    url: '/adc-service/web/rest/v1/services/EdgeCoreNetExpertService/cne_dash/cne_dash_risk_overview',
+    url: '/adc-service/web/rest/v1/services/EdgeRiskCheckService/cs_ncd_risk_check/cs_ncd_risk_check_cne_overview',
     method: 'post',
     data: {},
   });

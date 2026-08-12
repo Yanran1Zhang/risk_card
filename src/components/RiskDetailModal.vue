@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Check, ChevronLeft, ChevronRight, Funnel, X } from 'lucide-vue-next'
-import { fetchRiskDetails } from '../mock/riskApi.js'
+import { getRiskCheckNeDetails } from '../api/api.js'
 
 const props = defineProps({
   open: Boolean,
@@ -69,7 +69,8 @@ const loadDetails = async () => {
   loadError.value = ''
 
   try {
-    const response = await fetchRiskDetails(requestParams())
+    const p = requestParams()
+    const response = await getRiskCheckNeDetails(p.start, p.limit, p.risk_status, p.risk_type_code, p.ne_type_code, p.risk_level_code, p.ne_id, p.risk_name)
     if (sequence !== requestSequence) return
     records.value = response.results
     totalCount.value = response.total_count

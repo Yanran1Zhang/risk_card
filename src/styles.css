@@ -113,6 +113,7 @@ th:nth-child(1) { width: 6%; } th:nth-child(2) { width: 12%; } th:nth-child(3) {
 .level--low { color: #49e0d4; border-color: rgba(34,211,197,.34); background: rgba(34,211,197,.1); }
 .solution { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-height: 1.55; }
 .empty-cell { height: 220px; color: var(--muted); text-align: center; }
+.overview-state { padding: 48px 24px; text-align: center; color: var(--muted); }
 .retry-button { margin-left: 12px; padding: 7px 10px; border: 1px solid rgba(34,211,197,.3); background: rgba(34,211,197,.08); color: var(--cyan); cursor: pointer; }
 .retry-button:hover { background: rgba(34,211,197,.15); }
 .pagination { display: flex; align-items: center; justify-content: flex-end; gap: 7px; padding: 16px 24px; border-top: 1px solid var(--line); background: #111f23; }
