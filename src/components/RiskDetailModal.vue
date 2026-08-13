@@ -213,3 +213,88 @@ onBeforeUnmount(() => {
     </Transition>
   </Teleport>
 </template>
+
+<style scoped>
+.modal-backdrop {
+  --line: rgba(161, 193, 196, 0.14);
+  --muted: #819397;
+  --cyan: #22d3c5;
+  --blue: #39a8ff;
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  background: rgba(2,8,10,.76);
+  backdrop-filter: blur(6px);
+}
+
+.modal-backdrop button, .modal-backdrop select { font: inherit; }
+.modal-backdrop button { color: inherit; }
+.modal-backdrop button:focus-visible, .modal-backdrop select:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+.detail-modal { width: min(1320px, 96vw); max-height: min(820px, 92vh); display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(145,182,185,.24); background: #0e191d; box-shadow: 0 30px 90px rgba(0,0,0,.62); }
+.detail-modal__header { display: flex; justify-content: space-between; align-items: center; padding: 20px 26px; border-bottom: 1px solid var(--line); background: #111f23; }
+.detail-modal__header h2 { margin: 0; font-size: 21px; }
+.icon-button { width: 36px; height: 36px; display: grid; place-items: center; flex: 0 0 auto; padding: 0; border: 1px solid var(--line); background: transparent; color: #a9b8ba; cursor: pointer; }
+.icon-button:hover { color: #fff; border-color: rgba(255,255,255,.28); background: rgba(255,255,255,.05); }
+.table-shell { min-height: 0; overflow: auto; }
+table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+th { position: sticky; top: 0; z-index: 2; padding: 15px 14px; border-bottom: 1px solid rgba(161,193,196,.2); background: #152428; color: #a9bbbd; font-size: 12px; text-align: left; white-space: nowrap; }
+td { height: 58px; padding: 12px 14px; border-bottom: 1px solid rgba(161,193,196,.08); color: #cdd9da; font-size: 13px; vertical-align: middle; }
+tbody tr:hover td { background: rgba(34,211,197,.035); }
+th:nth-child(1) { width: 6%; } th:nth-child(2) { width: 12%; } th:nth-child(3) { width: 13%; } th:nth-child(4) { width: 9%; } th:nth-child(5) { width: 16%; } th:nth-child(6) { width: 10%; } th:nth-child(7) { width: 9%; } th:nth-child(8) { width: 25%; }
+.number-column, .number-cell { text-align: center; }
+.number-cell { color: #71878a; font-variant-numeric: tabular-nums; }
+.filterable-header { z-index: 4; }
+.header-label { display: inline-flex; align-items: center; gap: 3px; }
+.filter-button { width: 26px; height: 26px; display: inline-grid; place-items: center; padding: 0; border: 1px solid transparent; background: transparent; color: #6f8588; cursor: pointer; }
+.filter-button:hover { color: #c5d5d6; border-color: rgba(161,193,196,.18); background: rgba(255,255,255,.04); }
+.filter-button--active { color: var(--cyan); border-color: rgba(34,211,197,.3); background: rgba(34,211,197,.08); }
+.filter-menu { position: absolute; z-index: 20; top: calc(100% + 5px); left: 10px; width: max-content; min-width: 150px; max-width: 250px; max-height: 280px; overflow-y: auto; padding: 5px; border: 1px solid rgba(161,193,196,.26); background: #102025; box-shadow: 0 14px 36px rgba(0,0,0,.55); }
+.filter-menu--wide { min-width: 210px; }
+.filter-menu button { width: 100%; min-height: 34px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 9px; border: 0; background: transparent; color: #aebfc1; text-align: left; white-space: nowrap; cursor: pointer; }
+.filter-menu button:hover { background: rgba(255,255,255,.05); color: #fff; }
+.filter-menu button.active { color: var(--cyan); background: rgba(34,211,197,.08); }
+.filter-menu button span { overflow: hidden; text-overflow: ellipsis; }
+.mono { color: #aec4c6; font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; }
+.level { display: inline-flex; min-width: 30px; height: 24px; align-items: center; justify-content: center; border: 1px solid; font-weight: 700; font-size: 11px; }
+.level--high { color: #ff7685; border-color: rgba(255,84,104,.34); background: rgba(255,84,104,.11); }
+.level--medium { color: #ffc16e; border-color: rgba(255,173,79,.34); background: rgba(255,173,79,.1); }
+.level--low { color: #49e0d4; border-color: rgba(34,211,197,.34); background: rgba(34,211,197,.1); }
+.solution { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-height: 1.55; }
+.empty-cell { height: 220px; color: var(--muted); text-align: center; }
+.retry-button { margin-left: 12px; padding: 7px 10px; border: 1px solid rgba(34,211,197,.3); background: rgba(34,211,197,.08); color: var(--cyan); cursor: pointer; }
+.retry-button:hover { background: rgba(34,211,197,.15); }
+.pagination { display: flex; align-items: center; justify-content: flex-end; gap: 7px; padding: 16px 24px; border-top: 1px solid var(--line); background: #111f23; }
+.pagination__total { margin-right: 5px; color: var(--muted); font-size: 12px; }
+.pagination__total strong { color: #f0f7f7; }
+.pagination select { height: 34px; padding: 0 28px 0 10px; border: 1px solid var(--line); background: #0d181c; color: #cbd7d8; font-size: 12px; }
+.page-button { min-width: 34px; height: 34px; display: grid; place-items: center; padding: 0 9px; border: 1px solid transparent; background: transparent; color: #94a7aa; cursor: pointer; }
+.page-button:hover:not(:disabled) { border-color: var(--line); color: #fff; }
+.page-button--active { color: #fff; border-color: rgba(57,168,255,.35); background: #1675a7; }
+.page-button:disabled { opacity: .3; cursor: not-allowed; }
+
+.modal-enter-active, .modal-leave-active { transition: opacity .2s ease; }
+.modal-enter-active .detail-modal, .modal-leave-active .detail-modal { transition: transform .2s ease, opacity .2s ease; }
+.modal-enter-from, .modal-leave-to { opacity: 0; }
+.modal-enter-from .detail-modal, .modal-leave-to .detail-modal { opacity: 0; transform: translateY(12px) scale(.99); }
+
+@media (max-width: 620px) {
+  .detail-modal__header { padding: 18px; }
+  .detail-modal__header h2 { font-size: 17px; }
+  .table-shell { overflow-x: auto; }
+  table { min-width: 1050px; }
+  .modal-backdrop { padding: 14px; place-items: stretch; }
+  .detail-modal { width: 100%; max-height: calc(100vh - 28px); margin: auto 0; }
+  .pagination { justify-content: center; padding: 13px 10px; }
+  .pagination__total { display: none; }
+}
+</style>
+
+<style>
+body.modal-open { overflow: hidden; }
+</style>
