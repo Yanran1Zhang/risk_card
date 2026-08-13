@@ -6,6 +6,8 @@
  */
 const SC_TQL_UTIL = require('/EdgeSysMgrService/cs_ncd_system_config/sc_tql_util');
 
+const USE_MOCK = true;
+
 const start = _message.start ? _message.start : 0;
 const limit = _message.limit ? _message.limit : 100;
 
@@ -88,4 +90,30 @@ function main() {
   };
 }
 
-return main();
+// ===== Mock 数据（联调用，上线前将 USE_MOCK 改为 false）=====
+function mockMain() {
+  return {
+    total: 28,
+    open: 18,
+    closed: 10,
+    riskTypes: [
+      { name: '配置类', count: 7 },
+      { name: '性能类', count: 5 },
+      { name: '安全类', count: 6 },
+    ],
+    neTypes: [
+      { name: 'AMF', count: 3 },
+      { name: 'SMF', count: 3 },
+      { name: 'UPF', count: 3 },
+      { name: 'MME', count: 3 },
+      { name: 'AUSF', count: 1 },
+      { name: 'UDM', count: 1 },
+      { name: 'PCF', count: 1 },
+      { name: 'UDR', count: 1 },
+      { name: 'NSSF', count: 1 },
+      { name: 'NRF', count: 1 },
+    ],
+  };
+}
+
+return USE_MOCK ? mockMain() : main();

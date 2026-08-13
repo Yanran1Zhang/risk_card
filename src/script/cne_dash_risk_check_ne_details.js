@@ -10,6 +10,8 @@ const SC_DATE_UTIL = require('/EdgeSysMgrService/cs_ncd_system_config/sc_date_ut
 const {useI18n} = require('/EdgeSysMgrService/cs_ncd_system_config/sc_i18n_util');
 const t = useI18n(_context, _runtime, 'risk_check');
 
+const USE_MOCK = true;
+
 const start = _message.start ? _message.start : 0;
 const limit = _message.limit ? _message.limit : 10;
 const riskStatusCode = _message.risk_status || 'ALL';
@@ -217,4 +219,86 @@ function buildFilterOptions(items) {
   };
 }
 
-return main();
+// ===== Mock 数据（联调用，上线前将 USE_MOCK 改为 false）=====
+const mockRecords = [
+  { task_ne_id: 'TNE-001', ne_name: 'SH-AMF-03', ne_id: 'ALT-0721-156', ne_uid: 'U-001', ne_type: 'AMF', risk_name: '网元脱管风险', risk_type: 'CONFIG', risk_type_name: '配置类', risk_level: 'High', improvement_measure: '检查NCE连接配置并恢复管理通道', risk_status: '0', risk_identification_time: '2026-08-01 10:30' },
+  { task_ne_id: 'TNE-002', ne_name: 'SH-AMF-07', ne_id: 'ALT-0721-188', ne_uid: 'U-002', ne_type: 'AMF', risk_name: '弱口令配置风险', risk_type: 'SECURITY', risk_type_name: '安全类', risk_level: 'High', improvement_measure: '更新高强度口令并启用定期轮换策略', risk_status: '0', risk_identification_time: '2026-08-02 09:15' },
+  { task_ne_id: 'TNE-003', ne_name: 'RI-SMF-02', ne_id: 'ALT-0814-203', ne_uid: 'U-003', ne_type: 'SMF', risk_name: '传输链路质量下降', risk_type: 'PERFORMANCE', risk_type_name: '性能类', risk_level: 'Medium', improvement_measure: '检查光纤链路衰减并优化传输参数', risk_status: '0', risk_identification_time: '2026-08-03 11:20' },
+  { task_ne_id: 'TNE-004', ne_name: 'RI-SMF-06', ne_id: 'ALT-0814-226', ne_uid: 'U-004', ne_type: 'SMF', risk_name: '配置不一致风险', risk_type: 'CONFIG', risk_type_name: '配置类', risk_level: 'Medium', improvement_measure: '对比基线配置并同步标准模板', risk_status: '0', risk_identification_time: '2026-08-04 14:45' },
+  { task_ne_id: 'TNE-005', ne_name: 'JD-UPF-01', ne_id: 'ALT-0912-317', ne_uid: 'U-005', ne_type: 'UPF', risk_name: '用户面流量异常', risk_type: 'PERFORMANCE', risk_type_name: '性能类', risk_level: 'Low', improvement_measure: '复核流量趋势并调整负载均衡策略', risk_status: '0', risk_identification_time: '2026-08-05 08:00' },
+  { task_ne_id: 'TNE-006', ne_name: 'JD-UPF-04', ne_id: 'ALT-0912-352', ne_uid: 'U-006', ne_type: 'UPF', risk_name: '证书即将过期', risk_type: 'SECURITY', risk_type_name: '安全类', risk_level: 'Medium', improvement_measure: '更新网元证书并验证双向认证状态', risk_status: '0', risk_identification_time: '2026-08-06 16:30' },
+  { task_ne_id: 'TNE-007', ne_name: 'NW-MME-05', ne_id: 'ALT-0628-419', ne_uid: 'U-007', ne_type: 'MME', risk_name: '备份任务连续失败', risk_type: 'CONFIG', risk_type_name: '配置类', risk_level: 'Low', improvement_measure: '检查备份目录容量并重新执行备份任务', risk_status: '0', risk_identification_time: '2026-08-07 10:00' },
+  { task_ne_id: 'TNE-008', ne_name: 'NW-MME-08', ne_id: 'ALT-0628-463', ne_uid: 'U-008', ne_type: 'MME', risk_name: '网元脱管风险', risk_type: 'CONFIG', risk_type_name: '配置类', risk_level: 'High', improvement_measure: '检查NCE连接配置并恢复管理通道', risk_status: '0', risk_identification_time: '2026-07-28 09:30' },
+  { task_ne_id: 'TNE-009', ne_name: 'SH-AUSF-01', ne_id: 'ALT-0317-501', ne_uid: 'U-009', ne_type: 'AUSF', risk_name: '弱口令配置风险', risk_type: 'SECURITY', risk_type_name: '安全类', risk_level: 'High', improvement_measure: '更新高强度口令并启用定期轮换策略', risk_status: '0', risk_identification_time: '2026-07-29 13:15' },
+  { task_ne_id: 'TNE-010', ne_name: 'RI-UDM-02', ne_id: 'ALT-0522-612', ne_uid: 'U-010', ne_type: 'UDM', risk_name: '证书即将过期', risk_type: 'SECURITY', risk_type_name: '安全类', risk_level: 'Medium', improvement_measure: '更新网元证书并验证双向认证状态', risk_status: '0', risk_identification_time: '2026-07-30 15:45' },
+  { task_ne_id: 'TNE-011', ne_name: 'JD-PCF-03', ne_id: 'ALT-0408-733', ne_uid: 'U-011', ne_type: 'PCF', risk_name: '配置不一致风险', risk_type: 'CONFIG', risk_type_name: '配置类', risk_level: 'Medium', improvement_measure: '对比基线配置并同步标准模板', risk_status: '0', risk_identification_time: '2026-07-31 11:00' },
+  { task_ne_id: 'TNE-012', ne_name: 'NW-UDR-01', ne_id: 'ALT-0615-844', ne_uid: 'U-012', ne_type: 'UDR', risk_name: '用户面流量异常', risk_type: 'PERFORMANCE', risk_type_name: '性能类', risk_level: 'Low', improvement_measure: '复核流量趋势并调整负载均衡策略', risk_status: '0', risk_identification_time: '2026-08-01 14:20' },
+  { task_ne_id: 'TNE-013', ne_name: 'SH-NSSF-02', ne_id: 'ALT-0729-955', ne_uid: 'U-013', ne_type: 'NSSF', risk_name: '传输链路质量下降', risk_type: 'PERFORMANCE', risk_type_name: '性能类', risk_level: 'Medium', improvement_measure: '检查光纤链路衰减并优化传输参数', risk_status: '0', risk_identification_time: '2026-08-02 08:45' },
+  { task_ne_id: 'TNE-014', ne_name: 'RI-NRF-01', ne_id: 'ALT-0811-166', ne_uid: 'U-014', ne_type: 'NRF', risk_name: '备份任务连续失败', risk_type: 'CONFIG', risk_type_name: '配置类', risk_level: 'Low', improvement_measure: '检查备份目录容量并重新执行备份任务', risk_status: '0', risk_identification_time: '2026-08-03 10:30' },
+  { task_ne_id: 'TNE-015', ne_name: 'SH-AMF-03', ne_id: 'ALT-0721-156', ne_uid: 'U-001', ne_type: 'AMF', risk_name: '传输链路质量下降', risk_type: 'PERFORMANCE', risk_type_name: '性能类', risk_level: 'Medium', improvement_measure: '检查光纤链路衰减并优化传输参数', risk_status: '0', risk_identification_time: '2026-08-04 09:00' },
+  { task_ne_id: 'TNE-016', ne_name: 'RI-SMF-02', ne_id: 'ALT-0814-203', ne_uid: 'U-003', ne_type: 'SMF', risk_name: '弱口令配置风险', risk_type: 'SECURITY', risk_type_name: '安全类', risk_level: 'High', improvement_measure: '更新高强度口令并启用定期轮换策略', risk_status: '0', risk_identification_time: '2026-08-05 12:15' },
+  { task_ne_id: 'TNE-017', ne_name: 'JD-UPF-01', ne_id: 'ALT-0912-317', ne_uid: 'U-005', ne_type: 'UPF', risk_name: '配置不一致风险', risk_type: 'CONFIG', risk_type_name: '配置类', risk_level: 'Medium', improvement_measure: '对比基线配置并同步标准模板', risk_status: '0', risk_identification_time: '2026-08-06 14:30' },
+  { task_ne_id: 'TNE-018', ne_name: 'NW-MME-05', ne_id: 'ALT-0628-419', ne_uid: 'U-007', ne_type: 'MME', risk_name: '证书即将过期', risk_type: 'SECURITY', risk_type_name: '安全类', risk_level: 'Medium', improvement_measure: '更新网元证书并验证双向认证状态', risk_status: '0', risk_identification_time: '2026-08-07 16:00' },
+  { task_ne_id: 'TNE-019', ne_name: 'SH-AMF-07', ne_id: 'ALT-0721-188', ne_uid: 'U-002', ne_type: 'AMF', risk_name: '备份任务连续失败', risk_type: 'CONFIG', risk_type_name: '配置类', risk_level: 'Low', improvement_measure: '检查备份目录容量并重新执行备份任务', risk_status: '1', risk_identification_time: '2026-07-15 10:00' },
+  { task_ne_id: 'TNE-020', ne_name: 'RI-SMF-06', ne_id: 'ALT-0814-226', ne_uid: 'U-004', ne_type: 'SMF', risk_name: '用户面流量异常', risk_type: 'PERFORMANCE', risk_type_name: '性能类', risk_level: 'Low', improvement_measure: '复核流量趋势并调整负载均衡策略', risk_status: '1', risk_identification_time: '2026-07-16 11:30' },
+  { task_ne_id: 'TNE-021', ne_name: 'JD-UPF-04', ne_id: 'ALT-0912-352', ne_uid: 'U-006', ne_type: 'UPF', risk_name: '网元脱管风险', risk_type: 'CONFIG', risk_type_name: '配置类', risk_level: 'High', improvement_measure: '检查NCE连接配置并恢复管理通道', risk_status: '1', risk_identification_time: '2026-07-18 09:15' },
+  { task_ne_id: 'TNE-022', ne_name: 'NW-MME-08', ne_id: 'ALT-0628-463', ne_uid: 'U-008', ne_type: 'MME', risk_name: '证书即将过期', risk_type: 'SECURITY', risk_type_name: '安全类', risk_level: 'Medium', improvement_measure: '更新网元证书并验证双向认证状态', risk_status: '1', risk_identification_time: '2026-07-20 14:00' },
+  { task_ne_id: 'TNE-023', ne_name: 'SH-AUSF-01', ne_id: 'ALT-0317-501', ne_uid: 'U-009', ne_type: 'AUSF', risk_name: '配置不一致风险', risk_type: 'CONFIG', risk_type_name: '配置类', risk_level: 'Medium', improvement_measure: '对比基线配置并同步标准模板', risk_status: '1', risk_identification_time: '2026-07-22 08:45' },
+  { task_ne_id: 'TNE-024', ne_name: 'RI-UDM-02', ne_id: 'ALT-0522-612', ne_uid: 'U-010', ne_type: 'UDM', risk_name: '传输链路质量下降', risk_type: 'PERFORMANCE', risk_type_name: '性能类', risk_level: 'Medium', improvement_measure: '检查光纤链路衰减并优化传输参数', risk_status: '1', risk_identification_time: '2026-07-24 13:30' },
+  { task_ne_id: 'TNE-025', ne_name: 'JD-PCF-03', ne_id: 'ALT-0408-733', ne_uid: 'U-011', ne_type: 'PCF', risk_name: '弱口令配置风险', risk_type: 'SECURITY', risk_type_name: '安全类', risk_level: 'High', improvement_measure: '更新高强度口令并启用定期轮换策略', risk_status: '1', risk_identification_time: '2026-07-26 10:15' },
+  { task_ne_id: 'TNE-026', ne_name: 'NW-UDR-01', ne_id: 'ALT-0615-844', ne_uid: 'U-012', ne_type: 'UDR', risk_name: '备份任务连续失败', risk_type: 'CONFIG', risk_type_name: '配置类', risk_level: 'Low', improvement_measure: '检查备份目录容量并重新执行备份任务', risk_status: '1', risk_identification_time: '2026-07-28 15:00' },
+  { task_ne_id: 'TNE-027', ne_name: 'SH-NSSF-02', ne_id: 'ALT-0729-955', ne_uid: 'U-013', ne_type: 'NSSF', risk_name: '网元脱管风险', risk_type: 'CONFIG', risk_type_name: '配置类', risk_level: 'High', improvement_measure: '检查NCE连接配置并恢复管理通道', risk_status: '1', risk_identification_time: '2026-07-10 09:00' },
+  { task_ne_id: 'TNE-028', ne_name: 'RI-NRF-01', ne_id: 'ALT-0811-166', ne_uid: 'U-014', ne_type: 'NRF', risk_name: '用户面流量异常', risk_type: 'PERFORMANCE', risk_type_name: '性能类', risk_level: 'Low', improvement_measure: '复核流量趋势并调整负载均衡策略', risk_status: '1', risk_identification_time: '2026-07-12 11:45' },
+];
+
+function mockMain() {
+  // 1. 范围筛选（影响 filter_options 和列表）
+  let scoped = mockRecords.slice();
+  if (riskStatusCode !== 'ALL' && riskStatusMap[riskStatusCode]) {
+    scoped = scoped.filter(r => r.risk_status === riskStatusMap[riskStatusCode]);
+  }
+  if (riskTypeCode) {
+    scoped = scoped.filter(r => r.risk_type === riskTypeCode);
+  }
+  if (neTypeCode) {
+    scoped = scoped.filter(r => r.ne_type === neTypeCode);
+  }
+
+  // 2. 构建 filter_options（只受范围筛选影响）
+  const filterOptionsInput = scoped.map(r => ({
+    ne_id: r.ne_id,
+    ne_type: r.ne_type,
+    risk_name: r.risk_name,
+    risk_type: r.risk_type_name,
+    risk_level: r.risk_level,
+  }));
+  const filterOptions = buildFilterOptions(filterOptionsInput);
+
+  // 3. 列筛选（只影响列表）
+  let filtered = scoped.slice();
+  if (neId) {
+    filtered = filtered.filter(r => r.ne_id === neId);
+  }
+  if (riskName) {
+    filtered = filtered.filter(r => r.risk_name === riskName);
+  }
+  if (riskLevelCode && riskLevelDbMap[riskLevelCode]) {
+    filtered = filtered.filter(r => r.risk_level === riskLevelDbMap[riskLevelCode]);
+  }
+
+  // 4. 排序 + 分页
+  filtered.sort((a, b) => (a.risk_identification_time < b.risk_identification_time ? 1 : -1));
+  const totalCount = filtered.length;
+  const pageData = filtered.slice(start, start + limit);
+
+  // 5. 通过 buildResultItem 构建返回
+  const results = pageData.map(buildResultItem);
+
+  return {
+    total_count: totalCount,
+    results: results,
+    filter_options: filterOptions,
+  };
+}
+
+return USE_MOCK ? mockMain() : main();
