@@ -412,7 +412,7 @@ onBeforeUnmount(() => {
   --modal-hover-bg: rgba(0, 103, 209, 0.04);
   --modal-text: #1a2a2c;
   --modal-muted-text: #6a7c7e;
-  --modal-icon-color: #6a7c7e;
+  --modal-icon-color: #000000;
   --modal-select-bg: #ffffff;
   --modal-select-color: #2d3e41;
   --modal-page-text: #5a6c6e;
@@ -468,7 +468,7 @@ th:nth-child(1) { width: 6%; } th:nth-child(2) { width: 12%; } th:nth-child(3) {
 .number-cell { color: var(--modal-muted-text); font-variant-numeric: tabular-nums; }
 .filterable-header { z-index: 4; }
 .header-label { display: inline-flex; align-items: center; gap: 3px; }
-.filter-button { width: 26px; height: 26px; display: inline-grid; place-items: center; padding: 0; border: 1px solid transparent; background: transparent; color: var(--modal-muted-text); cursor: pointer; }
+.filter-button { width: 26px; height: 26px; display: inline-grid; place-items: center; padding: 0; border: 1px solid transparent; background: transparent; color: var(--modal-icon-color); cursor: pointer; }
 .filter-button:hover { color: var(--modal-th-color); border-color: var(--modal-border); background: var(--modal-hover-bg); }
 .filter-button--active { color: var(--cyan); border-color: rgba(34,211,197,.3); background: rgba(34,211,197,.08); }
 .filter-menu { position: absolute; z-index: 20; top: calc(100% + 5px); left: 10px; width: max-content; min-width: 150px; max-width: 250px; max-height: 280px; overflow-y: auto; padding: 5px; border: 1px solid var(--modal-border); background: var(--modal-bg); box-shadow: 0 14px 36px rgba(0,0,0,.15); }
