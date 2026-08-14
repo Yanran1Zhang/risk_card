@@ -21,6 +21,30 @@ const riskLevelCode = _message.risk_level_code || '';
 const neId = _message.ne_id || '';
 const riskName = _message.risk_name || '';
 
+// ===== 时间周期配置（mock：后续替换为读取配置表）=====
+// 配置项：最近 1/2/3/4/5/6 个月，默认 3 个月
+const TIME_PERIOD_OPTIONS = [1, 2, 3, 4, 5, 6];
+const DEFAULT_PERIOD_MONTHS = 3;
+
+function getConfiguredPeriodMonths() {
+  const period = Number(_message.time_period) || DEFAULT_PERIOD_MONTHS;
+  return TIME_PERIOD_OPTIONS.includes(period) ? period : DEFAULT_PERIOD_MONTHS;
+}
+
+// 根据月数计算 UTC 时间范围 [startTime, endTime)
+function computeTimeRange(months) {
+  const pad = (n) => String(n).padStart(2, '0');
+  const toUtcStr = (d) =>
+    `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`;
+  const now = new Date();
+  const start = new Date(now);
+  start.setMonth(start.getMonth() - months);
+  return { startTime: toUtcStr(start), endTime: toUtcStr(now) };
+}
+
+const periodMonths = getConfiguredPeriodMonths();
+const { startTime, endTime } = computeTimeRange(periodMonths);
+
 const isCn = _runtime.language === 'zh_CN';
 const zoneId = _runtime.timeZone;
 
@@ -45,7 +69,7 @@ const defaultResult = {
   filter_options: { neId: [], neType: [], riskName: [], riskType: [], riskLevel: [] },
 };
 
-// 三表 JOIN 基础片段
+// 三表 JOIN 基础片段（含时间范围过滤）
 const codeSnippet = `
   from '/EdgeRiskCheckService/cs_ncd_risk_check/cs_ncd_risk_check_task_ne' AS tn
   left join '/EdgeRiskCheckService/cs_ncd_risk_check/cs_ncd_risk_check_risk_task' AS task
@@ -53,11 +77,13 @@ const codeSnippet = `
   left join '/EdgeRiskCheckService/cs_ncd_risk_check/cs_ncd_risk_check_risk_config' AS config
   on task.rule_id = config.rule_id
   where tn.py_res_status in (1) and config.active = 1
+  and tn.risk_identification_time >= $!startTime
+  and tn.risk_identification_time < $!endTime
 `;
 
 function main() {
   // 1. 构建范围筛选条件（影响 filter_options 和列表）
-  const scopeParams = {};
+  const scopeParams = { startTime, endTime };
   let scopeWhere = '';
 
   if (riskStatusCode !== 'ALL' && riskStatusMap[riskStatusCode]) {
