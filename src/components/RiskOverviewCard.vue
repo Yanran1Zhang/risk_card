@@ -157,14 +157,31 @@ const loadOverview = async () => {
   overviewError.value = ''
   try {
     const data = await getRiskOverview()
+    const results = data.results || []
+    const riskTypeMap = {}
+    const neTypeMap = {}
+    let openCount = 0
+    let closedCount = 0
+
+    results.forEach((item) => {
+      const isClosed = item.riskStatus === '已关闭' || item.riskStatus === 'CLOSED'
+      if (isClosed) {
+        closedCount += 1
+      } else {
+        openCount += 1
+        if (item.riskType) riskTypeMap[item.riskType] = (riskTypeMap[item.riskType] || 0) + 1
+        if (item.neType) neTypeMap[item.neType] = (neTypeMap[item.neType] || 0) + 1
+      }
+    })
+
     cardData.value = {
       title: '网络风险',
       periodLabel: `${data.riskTime || 3}个月`,
-      total: data.total || 0,
-      open: data.open || 0,
-      closed: data.closed || 0,
-      riskTypes: data.riskTypes || [],
-      neTypes: data.neTypes || [],
+      total: data.total_count || 0,
+      open: openCount,
+      closed: closedCount,
+      riskTypes: Object.entries(riskTypeMap).map(([name, count]) => ({ name, count })),
+      neTypes: Object.entries(neTypeMap).map(([name, count]) => ({ name, count })),
     }
   } catch (error) {
     overviewError.value = '概览数据加载失败'
@@ -324,10 +341,11 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.risk-overview {
+:global(:root.dark) {
   --line: rgba(161, 193, 196, 0.14);
   --muted: #819397;
-  --cyan: #22d3c5;
+  --risk-overview-total-number-color: rgba(245, 245, 245, 1);
+  --cyan: rgba(245, 245, 245, 1);
   --blue: #39a8ff;
   --red: #ff5468;
   --orange: #ffad4f;
@@ -338,7 +356,27 @@ onBeforeUnmount(() => {
   --row-border: rgba(220, 220, 220, 1);
   --row-hover-border: rgba(57,168,255,.24);
   --row-hover-bg: rgba(57,168,255,.05);
+}
+
+:global(:root.light) {
+  --line: rgba(161, 193, 196, 0.14);
+  --muted: #819397;
+  --risk-overview-total-number-color: rgba(30, 30, 30, 1);
+  --cyan: rgba(30, 30, 30, 1);
+  --blue: #39a8ff;
+  --red: #ff5468;
+  --orange: #ffad4f;
+  --green: #57d39a;
+  --card-bg: rgba(255, 255, 255, 1);
+  --label-color: rgba(98, 98, 98, 1);
+  --count-color: #000000;
+  --row-border: rgba(220, 220, 220, 1);
+  --row-hover-border: rgba(57,168,255,.24);
+  --row-hover-bg: rgba(57,168,255,.05);
+}
+.risk-overview {
   width: min(360px, 100%);
+  height:100%;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -356,14 +394,14 @@ onBeforeUnmount(() => {
 .retry-button { margin-left: 12px; padding: 7px 10px; border: 1px solid rgba(34,211,197,.3); background: rgba(34,211,197,.08); color: var(--cyan); cursor: pointer; }
 .retry-button:hover { background: rgba(34,211,197,.15); }
 
-.risk-card { padding: 22px; border: 1px solid var(--line); background: var(--card-bg); box-shadow: 0 20px 50px rgba(0,0,0,.22); }
+.risk-card { height:100%;padding: 22px; border: 1px solid var(--line); background: var(--card-bg); box-shadow: 0 20px 50px rgba(0,0,0,.22); }
 .risk-card__header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
 .risk-overview .view-all { display: flex; align-items: center; gap: 2px; padding: 5px 0; border: 0; background: none; color: rgba(0, 103, 209, 1); font-size: 12px; cursor: pointer; }
 .risk-overview .view-all:hover { color: #7bcaff; }
 
 .risk-total { padding: 24px 0 22px; text-align: center; }
 .risk-total__number { display: inline-flex; align-items: flex-start; gap: 2px; padding: 0 6px; border: 0; background: transparent; cursor: pointer; }
-.risk-total__value { font-size: 46px; font-weight: 700; line-height: 1; }
+.risk-total__value { font-size: 46px; font-weight: 700; line-height: 1; color:var(--risk-overview-total-number-color) }
 .risk-total__number:hover .risk-total__value { color: var(--cyan); }
 .risk-total__unit { font-family: "Microsoft YaHei"; font-size: 12px; font-weight: 400; line-height: 20px; letter-spacing: 0; color: var(--label-color); align-self: flex-end; }
 .risk-total > p { margin: 8px 0 14px; font-family: "Microsoft YaHei"; font-size: 12px; font-weight: 400; line-height: 20px; letter-spacing: 0; color: var(--label-color); }
