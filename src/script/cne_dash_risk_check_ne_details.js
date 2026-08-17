@@ -21,16 +21,6 @@ const riskLevelCode = _message.risk_level_code || '';
 const neId = _message.ne_id || '';
 const riskName = _message.risk_name || '';
 
-// ===== 时间周期配置（mock：后续替换为读取配置表）=====
-// 配置项：最近 1/2/3/4/5/6 个月，默认 3 个月
-const TIME_PERIOD_OPTIONS = [1, 2, 3, 4, 5, 6];
-const DEFAULT_PERIOD_MONTHS = 3;
-
-function getConfiguredPeriodMonths() {
-  const period = Number(_message.time_period) || DEFAULT_PERIOD_MONTHS;
-  return TIME_PERIOD_OPTIONS.includes(period) ? period : DEFAULT_PERIOD_MONTHS;
-}
-
 // 根据月数计算 UTC 时间范围 [startTime, endTime)
 function computeTimeRange(months) {
   const pad = (n) => String(n).padStart(2, '0');
@@ -42,8 +32,6 @@ function computeTimeRange(months) {
   return { startTime: toUtcStr(start), endTime: toUtcStr(now) };
 }
 
-const periodMonths = getConfiguredPeriodMonths();
-const { startTime, endTime } = computeTimeRange(periodMonths);
 
 const isCn = _runtime.language === 'zh_CN';
 const zoneId = _runtime.timeZone;
@@ -83,6 +71,8 @@ const codeSnippet = `
 
 function main() {
   // 1. 构建范围筛选条件（影响 filter_options 和列表）
+  const riskTime = ServiceInvoker.post("/adc-service/rest/v1/services/EdgeCoreNetExpertService/cne_mgr/cne_mgr_threshold_get",{name:'risk_time'}).threshold_value ||3;
+  const { startTime, endTime } = computeTimeRange(riskTime);
   const scopeParams = { startTime, endTime };
   let scopeWhere = '';
 

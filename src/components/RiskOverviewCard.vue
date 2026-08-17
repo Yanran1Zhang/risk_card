@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { Check, ChevronLeft, ChevronRight, Funnel, X } from 'lucide-vue-next'
-import { getRiskOverview, getRiskCheckNeDetails } from '../api/api.js'
+import { getRiskOverview, getRiskCheckNeDetails } from '../api/risk.js'
+import CardTitle from './card-title.vue'
 
 const cardData = ref({ title: '网络风险', periodLabel: '3个月', total: 0, open: 0, closed: 0, riskTypes: [], neTypes: [] })
 const overviewLoading = ref(true)
@@ -195,7 +195,7 @@ onBeforeUnmount(() => {
     </div>
     <section v-else class="risk-card" aria-labelledby="risk-card-title">
       <header class="risk-card__header">
-        <h2 id="risk-card-title">{{ cardData.title }}</h2>
+        <CardTitle :text="cardData.title" />
         <button class="view-all" type="button" @click="openDetail({ kind: 'all' })">
           查看全量
         </button>
@@ -203,10 +203,10 @@ onBeforeUnmount(() => {
 
       <div class="risk-total">
         <button
-          class="risk-total__number"
-          type="button"
-          aria-label="查看全部网络风险"
-          @click="openDetail({ kind: 'all' })"
+            class="risk-total__number"
+            type="button"
+            aria-label="查看全部网络风险"
+            @click="openDetail({ kind: 'all' })"
         >
           <span class="risk-total__value">{{ cardData.total }}</span>
           <span class="risk-total__unit">个</span>
@@ -229,11 +229,11 @@ onBeforeUnmount(() => {
         </div>
         <div class="type-list">
           <button
-            v-for="(item, index) in cardData.riskTypes"
-            :key="item.name"
-            class="type-row"
-            type="button"
-            @click="openDetail({ kind: 'riskType', value: item.name })"
+              v-for="(item, index) in cardData.riskTypes"
+              :key="item.name"
+              class="type-row"
+              type="button"
+              @click="openDetail({ kind: 'riskType', value: item.name })"
           >
             <span class="type-row__meta">
               <strong>{{ item.name }}</strong>
@@ -241,9 +241,9 @@ onBeforeUnmount(() => {
             </span>
             <span class="type-row__track">
               <span
-                class="type-row__fill"
-                :class="`type-row__fill--${index + 1}`"
-                :style="{ width: `${Math.max(8, (item.count / cardData.open) * 100)}%` }"
+                  class="type-row__fill"
+                  :class="`type-row__fill--${index + 1}`"
+                  :style="{ width: `${Math.max(8, (item.count / cardData.open) * 100)}%` }"
               ></span>
             </span>
           </button>
@@ -256,11 +256,11 @@ onBeforeUnmount(() => {
         </div>
         <div class="ne-list">
           <button
-            v-for="item in cardData.neTypes"
-            :key="item.name"
-            class="ne-row"
-            type="button"
-            @click="openDetail({ kind: 'neType', value: item.name })"
+              v-for="item in cardData.neTypes"
+              :key="item.name"
+              class="ne-row"
+              type="button"
+              @click="openDetail({ kind: 'neType', value: item.name })"
           >
             <span>{{ item.name }}</span>
             <strong>{{ item.count }}</strong>
@@ -284,27 +284,27 @@ onBeforeUnmount(() => {
             <div class="table-shell">
               <table>
                 <thead>
-                  <tr>
-                    <th class="number-column">编号</th>
-                    <th>网元名称</th>
-                    <th class="filterable-header"><span class="header-label">网元ID<button class="filter-button" :class="{ 'filter-button--active': isFilterActive('neId') }" type="button" aria-label="筛选网元ID" title="筛选网元ID" @click.stop="toggleFilter('neId')"><Funnel :size="14" /></button></span><div v-if="openFilter === 'neId'" class="filter-menu" @click.stop><button type="button" :class="{ active: !columnFilters.neId }" @click="selectFilter('neId', '')"><span>全部</span><Check v-if="!columnFilters.neId" :size="14" /></button><button v-for="option in filterOptions.neId" :key="option" type="button" :class="{ active: columnFilters.neId === option }" @click="selectFilter('neId', option)"><span>{{ option }}</span><Check v-if="columnFilters.neId === option" :size="14" /></button></div></th>
-                    <th class="filterable-header"><span class="header-label">网元类型<button class="filter-button" :class="{ 'filter-button--active': isFilterActive('neType') }" type="button" aria-label="筛选网元类型" title="筛选网元类型" @click.stop="toggleFilter('neType')"><Funnel :size="14" /></button></span><div v-if="openFilter === 'neType'" class="filter-menu" @click.stop><button type="button" :class="{ active: !columnFilters.neType }" @click="selectFilter('neType', '')"><span>全部</span><Check v-if="!columnFilters.neType" :size="14" /></button><button v-for="option in filterOptions.neType" :key="option" type="button" :class="{ active: columnFilters.neType === option }" @click="selectFilter('neType', option)"><span>{{ option }}</span><Check v-if="columnFilters.neType === option" :size="14" /></button></div></th>
-                    <th class="filterable-header"><span class="header-label">风险名称<button class="filter-button" :class="{ 'filter-button--active': isFilterActive('riskName') }" type="button" aria-label="筛选风险名称" title="筛选风险名称" @click.stop="toggleFilter('riskName')"><Funnel :size="14" /></button></span><div v-if="openFilter === 'riskName'" class="filter-menu filter-menu--wide" @click.stop><button type="button" :class="{ active: !columnFilters.riskName }" @click="selectFilter('riskName', '')"><span>全部</span><Check v-if="!columnFilters.riskName" :size="14" /></button><button v-for="option in filterOptions.riskName" :key="option" type="button" :class="{ active: columnFilters.riskName === option }" @click="selectFilter('riskName', option)"><span>{{ option }}</span><Check v-if="columnFilters.riskName === option" :size="14" /></button></div></th>
-                    <th class="filterable-header"><span class="header-label">风险类型<button class="filter-button" :class="{ 'filter-button--active': isFilterActive('riskType') }" type="button" aria-label="筛选风险类型" title="筛选风险类型" @click.stop="toggleFilter('riskType')"><Funnel :size="14" /></button></span><div v-if="openFilter === 'riskType'" class="filter-menu" @click.stop><button type="button" :class="{ active: !columnFilters.riskType }" @click="selectFilter('riskType', '')"><span>全部</span><Check v-if="!columnFilters.riskType" :size="14" /></button><button v-for="option in filterOptions.riskType" :key="option" type="button" :class="{ active: columnFilters.riskType === option }" @click="selectFilter('riskType', option)"><span>{{ option }}</span><Check v-if="columnFilters.riskType === option" :size="14" /></button></div></th>
-                    <th class="filterable-header"><span class="header-label">风险等级<button class="filter-button" :class="{ 'filter-button--active': isFilterActive('riskLevel') }" type="button" aria-label="筛选风险等级" title="筛选风险等级" @click.stop="toggleFilter('riskLevel')"><Funnel :size="14" /></button></span><div v-if="openFilter === 'riskLevel'" class="filter-menu" @click.stop><button type="button" :class="{ active: !columnFilters.riskLevel }" @click="selectFilter('riskLevel', '')"><span>全部</span><Check v-if="!columnFilters.riskLevel" :size="14" /></button><button v-for="option in filterOptions.riskLevel" :key="option" type="button" :class="{ active: columnFilters.riskLevel === option }" @click="selectFilter('riskLevel', option)"><span>{{ option }}</span><Check v-if="columnFilters.riskLevel === option" :size="14" /></button></div></th>
-                    <th>解决措施</th>
-                  </tr>
+                <tr>
+                  <th class="number-column">编号</th>
+                  <th>网元名称</th>
+                  <th class="filterable-header"><span class="header-label">网元ID<button class="filter-button" :class="{ 'filter-button--active': isFilterActive('neId') }" type="button" aria-label="筛选网元ID" title="筛选网元ID" @click.stop="toggleFilter('neId')"><Funnel :size="14" /></button></span><div v-if="openFilter === 'neId'" class="filter-menu" @click.stop><button type="button" :class="{ active: !columnFilters.neId }" @click="selectFilter('neId', '')"><span>全部</span><Check v-if="!columnFilters.neId" :size="14" /></button><button v-for="option in filterOptions.neId" :key="option" type="button" :class="{ active: columnFilters.neId === option }" @click="selectFilter('neId', option)"><span>{{ option }}</span><Check v-if="columnFilters.neId === option" :size="14" /></button></div></th>
+                  <th class="filterable-header"><span class="header-label">网元类型<button class="filter-button" :class="{ 'filter-button--active': isFilterActive('neType') }" type="button" aria-label="筛选网元类型" title="筛选网元类型" @click.stop="toggleFilter('neType')"><Funnel :size="14" /></button></span><div v-if="openFilter === 'neType'" class="filter-menu" @click.stop><button type="button" :class="{ active: !columnFilters.neType }" @click="selectFilter('neType', '')"><span>全部</span><Check v-if="!columnFilters.neType" :size="14" /></button><button v-for="option in filterOptions.neType" :key="option" type="button" :class="{ active: columnFilters.neType === option }" @click="selectFilter('neType', option)"><span>{{ option }}</span><Check v-if="columnFilters.neType === option" :size="14" /></button></div></th>
+                  <th class="filterable-header"><span class="header-label">风险名称<button class="filter-button" :class="{ 'filter-button--active': isFilterActive('riskName') }" type="button" aria-label="筛选风险名称" title="筛选风险名称" @click.stop="toggleFilter('riskName')"><Funnel :size="14" /></button></span><div v-if="openFilter === 'riskName'" class="filter-menu filter-menu--wide" @click.stop><button type="button" :class="{ active: !columnFilters.riskName }" @click="selectFilter('riskName', '')"><span>全部</span><Check v-if="!columnFilters.riskName" :size="14" /></button><button v-for="option in filterOptions.riskName" :key="option" type="button" :class="{ active: columnFilters.riskName === option }" @click="selectFilter('riskName', option)"><span>{{ option }}</span><Check v-if="columnFilters.riskName === option" :size="14" /></button></div></th>
+                  <th class="filterable-header"><span class="header-label">风险类型<button class="filter-button" :class="{ 'filter-button--active': isFilterActive('riskType') }" type="button" aria-label="筛选风险类型" title="筛选风险类型" @click.stop="toggleFilter('riskType')"><Funnel :size="14" /></button></span><div v-if="openFilter === 'riskType'" class="filter-menu" @click.stop><button type="button" :class="{ active: !columnFilters.riskType }" @click="selectFilter('riskType', '')"><span>全部</span><Check v-if="!columnFilters.riskType" :size="14" /></button><button v-for="option in filterOptions.riskType" :key="option" type="button" :class="{ active: columnFilters.riskType === option }" @click="selectFilter('riskType', option)"><span>{{ option }}</span><Check v-if="columnFilters.riskType === option" :size="14" /></button></div></th>
+                  <th class="filterable-header"><span class="header-label">风险等级<button class="filter-button" :class="{ 'filter-button--active': isFilterActive('riskLevel') }" type="button" aria-label="筛选风险等级" title="筛选风险等级" @click.stop="toggleFilter('riskLevel')"><Funnel :size="14" /></button></span><div v-if="openFilter === 'riskLevel'" class="filter-menu" @click.stop><button type="button" :class="{ active: !columnFilters.riskLevel }" @click="selectFilter('riskLevel', '')"><span>全部</span><Check v-if="!columnFilters.riskLevel" :size="14" /></button><button v-for="option in filterOptions.riskLevel" :key="option" type="button" :class="{ active: columnFilters.riskLevel === option }" @click="selectFilter('riskLevel', option)"><span>{{ option }}</span><Check v-if="columnFilters.riskLevel === option" :size="14" /></button></div></th>
+                  <th>解决措施</th>
+                </tr>
                 </thead>
                 <tbody>
-                  <tr v-if="loading"><td class="empty-cell" colspan="8">正在加载风险详情...</td></tr>
-                  <tr v-else-if="loadError"><td class="empty-cell" colspan="8"><span>{{ loadError }}</span><button class="retry-button" type="button" @click="loadDetails">重新加载</button></td></tr>
-                  <tr v-else v-for="(item, index) in records" :key="item.id">
-                    <td class="number-cell">{{ rowNumber(index) }}</td>
-                    <td><strong>{{ item.neName }}</strong></td>
-                    <td class="mono">{{ item.neId }}</td><td>{{ item.neType }}</td><td>{{ item.riskName }}</td><td>{{ item.riskType }}</td>
-                    <td><span class="level" :class="levelClass(item.riskLevel)">{{ item.riskLevel }}</span></td><td><span class="solution" :title="item.solution">{{ item.solution }}</span></td>
-                  </tr>
-                  <tr v-if="!loading && !loadError && records.length === 0"><td class="empty-cell" colspan="8">当前筛选条件下暂无风险</td></tr>
+                <tr v-if="loading"><td class="empty-cell" colspan="8">正在加载风险详情...</td></tr>
+                <tr v-else-if="loadError"><td class="empty-cell" colspan="8"><span>{{ loadError }}</span><button class="retry-button" type="button" @click="loadDetails">重新加载</button></td></tr>
+                <tr v-else v-for="(item, index) in records" :key="item.id">
+                  <td class="number-cell">{{ rowNumber(index) }}</td>
+                  <td><strong>{{ item.neName }}</strong></td>
+                  <td class="mono">{{ item.neId }}</td><td>{{ item.neType }}</td><td>{{ item.riskName }}</td><td>{{ item.riskType }}</td>
+                  <td><span class="level" :class="levelClass(item.riskLevel)">{{ item.riskLevel }}</span></td><td><span class="solution" :title="item.solution">{{ item.solution }}</span></td>
+                </tr>
+                <tr v-if="!loading && !loadError && records.length === 0"><td class="empty-cell" colspan="8">当前筛选条件下暂无风险</td></tr>
                 </tbody>
               </table>
             </div>
@@ -357,8 +357,7 @@ onBeforeUnmount(() => {
 .retry-button:hover { background: rgba(34,211,197,.15); }
 
 .risk-card { padding: 22px; border: 1px solid var(--line); background: var(--card-bg); box-shadow: 0 20px 50px rgba(0,0,0,.22); }
-.risk-card__header { display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
-.risk-card__header h2 { margin: 0; color: var(--cyan); font-size: 18px; }
+.risk-card__header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
 .risk-overview .view-all { display: flex; align-items: center; gap: 2px; padding: 5px 0; border: 0; background: none; color: rgba(0, 103, 209, 1); font-size: 12px; cursor: pointer; }
 .risk-overview .view-all:hover { color: #7bcaff; }
 
