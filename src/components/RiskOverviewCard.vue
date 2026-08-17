@@ -159,7 +159,7 @@ const loadOverview = async () => {
     const data = await getRiskOverview()
     cardData.value = {
       title: '网络风险',
-      periodLabel: '3个月',
+      periodLabel: `${data.riskTime || 3}个月`,
       total: data.total || 0,
       open: data.open || 0,
       closed: data.closed || 0,

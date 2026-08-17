@@ -21,6 +21,17 @@ const riskLevelCode = _message.risk_level_code || '';
 const neId = _message.ne_id || '';
 const riskName = _message.risk_name || '';
 
+// 获取配置的风险时间周期（月数），默认 3 个月
+let riskTime = 3;
+try {
+  const res = ServiceInvoker.post("/adc-service/rest/v1/services/EdgeCoreNetExpertService/cne_mgr/cne_mgr_threshold_get", { name: 'risk_time' });
+  if (res && res.threshold_value) {
+    riskTime = Number(res.threshold_value) || 3;
+  }
+} catch (e) {
+  riskTime = 3;
+}
+
 // 根据月数计算 UTC 时间范围 [startTime, endTime)
 function computeTimeRange(months) {
   const pad = (n) => String(n).padStart(2, '0');
@@ -71,7 +82,6 @@ const codeSnippet = `
 
 function main() {
   // 1. 构建范围筛选条件（影响 filter_options 和列表）
-  const riskTime = ServiceInvoker.post("/adc-service/rest/v1/services/EdgeCoreNetExpertService/cne_mgr/cne_mgr_threshold_get",{name:'risk_time'}).threshold_value ||3;
   const { startTime, endTime } = computeTimeRange(riskTime);
   const scopeParams = { startTime, endTime };
   let scopeWhere = '';
@@ -158,6 +168,7 @@ function main() {
     total_count: (rs && rs.total) ? rs.total : 0,
     results: (rs && rs.results) ? rs.results.map(buildResultItem) : [],
     filter_options: filterOptions,
+    riskTime: riskTime,
   };
 }
 
@@ -314,6 +325,7 @@ function mockMain() {
     total_count: totalCount,
     results: results,
     filter_options: filterOptions,
+    riskTime: riskTime,
   };
 }
 
