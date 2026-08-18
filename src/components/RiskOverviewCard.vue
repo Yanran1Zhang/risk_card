@@ -464,9 +464,10 @@ onBeforeUnmount(() => {
 .type-row__fill--2 { background: var(--risk-overview-bar-orange); box-shadow: 0 0 12px rgba(255, 173, 79, .32); }
 .type-row__fill--3 { background: var(--risk-overview-bar-green); box-shadow: 0 0 12px rgba(87, 211, 154, .28); }
 .ne-list { display: grid; gap: 8px; }
-.ne-row { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 43px; padding: 0 8px; border: 1px solid var(--risk-overview-row-border-color); border-radius: 8px; background: transparent; font-size: 13px; color: var(--risk-overview-type-name-color); cursor: pointer; }
-.ne-row:hover { padding-left: 12px; color: var(--risk-overview-accent-color); border-color: var(--risk-overview-row-hover-border-color); background: var(--risk-overview-row-hover-bgc); }
-.ne-row strong { color: var(--risk-overview-number-color); }
+.risk-overview .ne-row { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 43px; padding: 0 8px; border: 1px solid var(--risk-overview-row-border-color); border-radius: 8px; background: transparent; font-size: 13px; color: var(--risk-overview-type-name-color); cursor: pointer; }
+.risk-overview .ne-row:hover { padding-left: 12px; color: var(--risk-overview-accent-color); border-color: var(--risk-overview-row-hover-border-color); background: var(--risk-overview-row-hover-bgc); }
+.risk-overview .ne-row strong { color: var(--risk-overview-number-color); }
+.icon-button :deep(svg), .filter-button :deep(svg) { fill: currentColor; }
 
 /* Modal styles */
 .modal-backdrop {
